@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo de GIFs</title>
+  <style>
+    :root{
+      --bg:#070A12;
+      --panel:rgba(16,20,36,.72);
+      --panel2:rgba(16,20,36,.92);
+      --text:#EAF0FF;
+      --muted:#98A2B3;
+      --b:rgba(255,255,255,.10);
+      --b2:rgba(255,255,255,.16);
+      --r:18px;
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1100px 700px at 18% 0%, rgba(129,66,255,.25), transparent 60%),
+        radial-gradient(900px 540px at 88% 10%, rgba(0,210,255,.18), transparent 60%),
+        radial-gradient(900px 540px at 50% 100%, rgba(255,70,160,.10), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(12px);
+      background: rgba(7,10,18,.68);
+      border-bottom: 1px solid var(--b);
+      padding: 14px 16px;
+    }
+    .top{
+      max-width: 1200px;
+      margin: 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{
+      width:42px; height:42px; border-radius:14px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(129,66,255,.95), rgba(0,210,255,.90));
+      box-shadow: var(--shadow);
+      font-weight: 900;
+      letter-spacing:.5px;
+      user-select:none;
+    }
+    .title{font-weight: 950; letter-spacing:.2px}
+    .sub{color:var(--muted); font-size: 12px; margin-top:2px}
+
+    .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    input, select{
+      border-radius: 14px;
+      border: 1px solid var(--b);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      outline:none;
+    }
+    input{min-width: 260px}
+    .btn{
+      border-radius: 14px;
+      border: 1px solid var(--b);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding: 10px 12px;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex; align-items:center; justify-content:center;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(255,255,255,.12); border-color: var(--b2)}
+    .btn:active{transform: translateY(1px)}
+
+    main{max-width: 1200px; margin: 18px auto; padding: 0 16px 34px}
+    .metaRow{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; flex-wrap:wrap;
+      margin: 10px 2px 14px;
+    }
+    .status{color:var(--muted); font-size:13px}
+    .note{color:var(--muted); font-size:12px}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+    }
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--b);
+      border-radius: var(--r);
+      overflow:hidden;
+      box-shadow: 0 10px 28px rgba(0,0,0,.28);
+      cursor:pointer;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(350px 120px at 30% 0%, rgba(129,66,255,.22), transparent 55%),
+                  radial-gradient(350px 120px at 80% 10%, rgba(0,210,255,.18), transparent 55%);
+      pointer-events:none;
+      opacity:.85;
+    }
+    .card:hover{
+      transform: translateY(-3px);
+      border-color: var(--b2);
+      background: rgba(16,20,36,.88);
+    }
+    .thumb{
+      aspect-ratio: 1 / 1;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.03);
+      position:relative;
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      transform: translateZ(0);
+    }
+    .caption{
+      padding: 10px 12px 12px;
+      position:relative;
+    }
+    .name{
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1.2;
+      margin-bottom:6px;
+    }
+    .mini{
+      color: var(--muted);
+      font-size: 12px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chips{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      font-size: 11px;
+      color: rgba(255,255,255,.88);
+      border: 1px solid var(--b);
+      background: rgba(255,255,255,.06);
+      padding: 6px 8px;
+      border-radius: 999px;
+    }
+
+    .skel{
+      border-radius: var(--r);
+      border: 1px solid var(--b);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
+      position:relative;
+      height: 265px;
+    }
+    .skel::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer { to { transform: translateX(100%);} }
+
+    .modal{position:fixed; inset:0; display:none; z-index:50}
+    .modal.show{display:block}
+    .backdrop{position:absolute; inset:0; background: rgba(0,0,0,.65)}
+    .panel{
+      position:absolute;
+      left:50%; top:50%;
+      transform: translate(-50%,-50%);
+      width: min(980px, calc(100% - 24px));
+      background: var(--panel2);
+      border: 1px solid var(--b);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelTop{
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--b);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .panelTitle{font-weight: 950}
+    .panelSub{color:var(--muted); font-size:12px; margin-top:3px}
+    .iconBtn{
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--b);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+    }
+    .iconBtn:hover{background: rgba(255,255,255,.10); border-color: var(--b2)}
+    .panelBody{
+      padding: 14px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.02);
+    }
+    .panelBody img{
+      width:100%;
+      height:auto;
+      max-height: 72vh;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(0,0,0,.18);
+    }
+    .panelBot{
+      padding: 12px 14px;
+      border-top: 1px solid var(--b);
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+    }
+    .leftBtns{display:flex; gap:10px; flex-wrap:wrap}
+    .rightBtns{display:flex; gap:10px; flex-wrap:wrap}
+    a.btn{display:inline-flex}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo">GIF</div>
+        <div>
+          <div class="title">Catálogo de Artwork (visualização)</div>
+          <div class="sub">GIFs animados • atualiza automaticamente do fornecedor</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="q" type="search" placeholder="Buscar por nome..." />
+        <select id="cat">
+          <option value="__all__">Todas categorias</option>
+        </select>
+        <button id="shuffle" class="btn" type="button">Embaralhar</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="metaRow">
+      <div id="status" class="status">Carregando…</div>
+      <div class="note">Fonte: steamartworkdesigns.com/shop (somente links)</div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+  </main>
+
+  <div id="modal" class="modal" aria-hidden="true">
+    <div id="backdrop" class="backdrop"></div>
+    <div class="panel" role="dialog" aria-modal="true">
+      <div class="panelTop">
+        <div>
+          <div id="mt" class="panelTitle"></div>
+          <div id="ms" class="panelSub"></div>
+        </div>
+        <button id="x" class="iconBtn" title="Fechar">✕</button>
+      </div>
+      <div class="panelBody">
+        <img id="mi" alt="">
+      </div>
+      <div class="panelBot">
+        <div class="leftBtns">
+          <a id="direct" class="btn" target="_blank" rel="noreferrer">Abrir GIF</a>
+          <a id="source" class="btn" target="_blank" rel="noreferrer">Página do produto</a>
+        </div>
+        <div class="rightBtns">
+          <button id="copy" class="btn" type="button">Copiar link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const statusEl = document.getElementById("status");
+    const qEl = document.getElementById("q");
+    const catEl = document.getElementById("cat");
+    const shuffleBtn = document.getElementById("shuffle");
+
+    const modal = document.getElementById("modal");
+    const backdrop = document.getElementById("backdrop");
+    const x = document.getElementById("x");
+    const mt = document.getElementById("mt");
+    const ms = document.getElementById("ms");
+    const mi = document.getElementById("mi");
+    const direct = document.getElementById("direct");
+    const source = document.getElementById("source");
+    const copy = document.getElementById("copy");
+
+    let items = [];
+    let view = [];
+
+    const norm = s => (s||"").toLowerCase();
+
+    function uniq(arr){ return [...new Set(arr)]; }
+    function shuffle(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    function skeleton(n=12){
+      grid.innerHTML = "";
+      for(let i=0;i<n;i++){
+        const d = document.createElement("div");
+        d.className = "skel";
+        grid.appendChild(d);
+      }
+    }
+
+    function render(){
+      const q = norm(qEl.value);
+      const c = catEl.value;
+
+      view = items.filter(it => {
+        const okQ = q ? norm(it.title).includes(q) : true;
+        const okC = (c === "__all__") ? true : (it.category === c);
+        return okQ && okC;
+      });
+
+      statusEl.textContent = `${view.length} GIF(s)`;
+
+      const frag = document.createDocumentFragment();
+      grid.innerHTML = "";
+
+      for(const it of view){
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="thumb"><img loading="lazy" src="${it.gif}" alt=""></div>
+          <div class="caption">
+            <div class="name">${escapeHtml(it.title || "Artwork")}</div>
+            <div class="mini">${escapeHtml(it.category || "Categoria")}</div>
+            <div class="chips">
+              <span class="chip">GIF</span>
+              <span class="chip">${escapeHtml(it.category || "All")}</span>
+            </div>
+          </div>
+        `;
+        card.onclick = () => openModal(it);
+        frag.appendChild(card);
+      }
+
+      grid.appendChild(frag);
+    }
+
+    function openModal(it){
+      modal.classList.add("show");
+      mi.src = it.gif;
+      mt.textContent = it.title || "Artwork";
+      ms.textContent = it.category ? `Categoria: ${it.category}` : "";
+      direct.href = it.gif;
+      source.href = it.source || "#";
+
+      copy.onclick = async () => {
+        try{
+          await navigator.clipboard.writeText(it.gif);
+          copy.textContent = "Copiado ✓";
+          setTimeout(()=>copy.textContent="Copiar link", 1200);
+        }catch{
+          alert("Não consegui copiar automaticamente. Abra o GIF e copie do navegador.");
+        }
+      };
+    }
+    function closeModal(){ modal.classList.remove("show"); }
+    backdrop.onclick = closeModal;
+    x.onclick = closeModal;
+    window.addEventListener("keydown", e => e.key==="Escape" && closeModal());
+
+    function escapeHtml(s){
+      return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    async function load(){
+      skeleton();
+      try{
+        const res = await fetch("gifs.json", { cache: "no-store" });
+        const data = await res.json();
+        items = (data.items || []);
+
+        const cats = uniq(items.map(x => x.category).filter(Boolean)).sort((a,b)=>a.localeCompare(b));
+        for(const c of cats){
+          const opt = document.createElement("option");
+          opt.value = c; opt.textContent = c;
+          catEl.appendChild(opt);
+        }
+
+        render();
+      }catch(e){
+        statusEl.textContent = "Erro ao carregar gifs.json";
+        grid.innerHTML = "";
+      }
+    }
+
+    qEl.addEventListener("input", render);
+    catEl.addEventListener("change", render);
+    shuffleBtn.addEventListener("click", () => { items = shuffle(items); render(); });
+
+    load();
+  </script>
+</body>
+</html>
